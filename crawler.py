@@ -5,8 +5,10 @@ import pandas as pd
 from pymongo import MongoClient
 import datetime
 import time
+import ssl
 
 start_time = time.time()
+ssl._create_default_https_context = ssl._create_unverified_context
 dfs = pd.read_html("https://rate.bot.com.tw/xrt?Lang=zh-TW")
 currency = dfs[0]
 currency_fix = currency.ix[:, 0:5]
@@ -17,17 +19,20 @@ add_time = datetime.datetime.now()
 currency_fix[u'更新時間'] = add_time
 # print(currency_fix)
 
+today = datetime.datetime.today().strftime('%Y-%m-%d')
+
 # 存檔
-# currency_fix.to_excel('currency.xlsx') # 存成excel
-# currency_fix.to_csv('currency.csv') # 存成csv
+currency_fix.to_excel('currency_%s.xlsx' % today) # 存成excel
+currency_fix.to_csv('currency_%s.csv' % today) # 存成csv
 
 # mongodb
-client = MongoClient()
-database = client['taiwan_bank']
-collection = database['exchange_rate']
+# client = MongoClient()
+# database = client['taiwan_bank']
+# collection = database['exchange_rate']
 
-records = currency_fix.to_dict('records')
-collection.insert_many(records)
+# records = currency_fix.to_dict('records')
+# collection.insert_many(records)
+
 end_time = time.time()
 cost_time = end_time - start_time
 print("cost_time:", cost_time)
