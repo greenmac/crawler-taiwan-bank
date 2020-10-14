@@ -11,7 +11,9 @@ start_time = time.time()
 ssl._create_default_https_context = ssl._create_unverified_context
 dfs = pd.read_html("https://rate.bot.com.tw/xrt?Lang=zh-TW")
 currency = dfs[0]
-currency_fix = currency.ix[:, 0:5]
+currency_fix = currency.iloc[:, 0:5]
+print(currency_fix)
+
 # 轉成Unicode比較不會有中文亂碼的問題
 currency_fix.columns = [u'幣別', u'現金匯率-本行買入', u'現金匯率-本行賣出', u'即期匯率-本行買入', u'即期匯率-本行賣出']
 currency_fix[u'幣別'] = currency_fix[u'幣別'].str.extract('\((\w+)\)')
